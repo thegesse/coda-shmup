@@ -6,7 +6,8 @@ import Player from "../entities/Player.ts";
 import GroupUtils from "../utils/GroupUtils.ts";
 import GameConstants from "../GameConstants.ts";
 import RegistryConstants from "../RegistryConstants.ts";
-import MiniBoss, {type MiniBossSheet} from "../entities/mini-boss.ts";
+import MiniBoss from "../entities/mini-boss.ts";
+import type {MiniBossSheet} from "../gameData/MiniBossData.ts";
 
 export default class EntityManager extends Plugins.ScenePlugin {
     public static readonly PLUGIN_KEY: string = 'EntityManager';
