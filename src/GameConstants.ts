@@ -8,6 +8,7 @@ export default class GameConstants {
         HOME: "HomeScene",
         MAIN_GAME: "MainGameScene",
         MAIN_UI: "MainUIScene",
+        PAUSE_MENU: "PauseMenuScene",
         GAME_OVER: "GameOverScene",
     } as const);
 

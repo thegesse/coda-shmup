@@ -3,6 +3,7 @@ import GameOverScene from "./scenes/GameOverScene.ts";
 import HomeScene from "./scenes/HomeScene.ts";
 import MainGameScene from './scenes/MainGameScene.ts';
 import MainUIScene from "./scenes/MainUIScene.ts";
+import PauseMenuScene from "./scenes/PauseMenuScene.ts";
 import EntityManager from "./managers/EntityManager.ts";
 import SaveManager from "./managers/SaveManager.ts";
 
@@ -37,6 +38,7 @@ const config: Types.Core.GameConfig = {
         HomeScene,
         MainGameScene,
         MainUIScene,
+        PauseMenuScene,
         GameOverScene
     ]
 };

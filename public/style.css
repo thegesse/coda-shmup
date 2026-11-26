@@ -2,7 +2,8 @@ body {
     margin: 0;
     padding: 0;
     color: rgba(255, 255, 255, 0.87);
-    background-color: #0f0f0f;
+    background: radial-gradient(ellipse at 50% 42%, #211447 0%, #0b0920 48%, #05040d 100%);
+    font-family: 'future', sans-serif;
 }
 
 #app {
@@ -12,4 +13,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#game-container {
+    overflow: hidden;
+    border: 1px solid rgba(143, 252, 255, 0.38);
+    border-radius: 10px;
+    box-shadow: 0 0 34px rgba(117, 88, 255, 0.2), 0 0 90px rgba(255, 91, 204, 0.08);
+}
+
+canvas {
+    display: block;
 }
