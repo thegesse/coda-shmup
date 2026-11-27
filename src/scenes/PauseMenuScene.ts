@@ -45,18 +45,18 @@ export default class PauseMenuScene extends Phaser.Scene {
     }
 
     private addMenuButton(x: number, y: number, label: string, action: () => void, color: number) {
-    const button = this.add.text(x, y, label, {
-        fontFamily: 'future',
-        fontSize: '24px',
-        color: `#${color.toString(16).padStart(6, '0')}`,
-        padding: { x: 28, y: 14 },
-        backgroundColor: '#211943'
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        const button = this.add.text(x, y, label, {
+            fontFamily: 'future',
+            fontSize: '24px',
+            color: `#${color.toString(16).padStart(6, '0')}`,
+            padding: { x: 28, y: 14 },
+            backgroundColor: '#211943'
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
-    button.on('pointerover', () => button.setScale(1.06).setBackgroundColor({ backgroundColor: '#38285c' }));
-    button.on('pointerout', () => button.setScale(1).setBackgroundColor({ backgroundColor: '#211943' }));
-    button.on('pointerdown', action);
-}
+        button.on('pointerover', () => button.setScale(1.06).setBackgroundColor('#38285c'));
+        button.on('pointerout', () => button.setScale(1).setBackgroundColor('#211943'));
+        button.on('pointerdown', action);
+    }
 
     private resumeGame() {
         this.scene.stop(GameConstants.SceneKeys.PAUSE_MENU);
@@ -65,11 +65,11 @@ export default class PauseMenuScene extends Phaser.Scene {
     }
 
     private restartRun() {
-    this.scene.stop(GameConstants.SceneKeys.PAUSE_MENU);
-    this.scene.resume(GameConstants.SceneKeys.MAIN_UI);
-    this.scene.manager.stop(GameConstants.SceneKeys.MAIN_GAME);
-    this.scene.manager.start(GameConstants.SceneKeys.MAIN_GAME);
-}
+        this.scene.stop(GameConstants.SceneKeys.PAUSE_MENU);
+        this.scene.resume(GameConstants.SceneKeys.MAIN_UI);
+        this.scene.manager.stop(GameConstants.SceneKeys.MAIN_GAME);
+        this.scene.manager.start(GameConstants.SceneKeys.MAIN_GAME);
+    }
 
     private returnToTitle() {
         this.scene.stop(GameConstants.SceneKeys.PAUSE_MENU);
