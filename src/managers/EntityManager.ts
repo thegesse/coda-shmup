@@ -21,14 +21,14 @@ export default class EntityManager extends Plugins.ScenePlugin {
         }
     }
 
-    private static readonly BOSS_HEALTH_PER_UNIT = 20;
+    private static readonly BOSS_HEALTH_PER_UNIT = 44;
     private static readonly BOSS_UNIT_COUNT = 11;
 
     private _player: Player;
     private _playerBullets: Physics.Arcade.Group;
     private _enemies: Physics.Arcade.Group;
     private _enemyBullets: Physics.Arcade.Group;
-    private _bossHealth: number = 220;
+    private _bossHealth: number = EntityManager.BOSS_HEALTH_PER_UNIT * EntityManager.BOSS_UNIT_COUNT;
     private _bossPatternPhase: number = 0;
 
     constructor(scene: Scene, pluginManager: Plugins.PluginManager) {
@@ -79,11 +79,16 @@ export default class EntityManager extends Plugins.ScenePlugin {
     }
 
     public initGroupCollisions() {
-        this.scene!.physics.add.overlap(this._playerBullets, this._enemies, (bullet) => {
-            this.scene!.registry.inc(RegistryConstants.Keys.PLAYER_SCORE);
+        this.scene!.physics.add.overlap(this._playerBullets, this._enemies, (bullet, target) => {
+            const playerBullet = bullet as Bullet;
+            const enemy = target as Enemy;
+            if (!enemy.active)
+                return;
 
-            (bullet as Bullet).disable();
-            this._bossHealth = Math.max(0, this._bossHealth - (bullet as Bullet).damage);
+            this.scene!.registry.inc(RegistryConstants.Keys.PLAYER_SCORE, 10);
+            playerBullet.disable();
+            enemy.getComponent(Health)?.damage(playerBullet.damage);
+            this._bossHealth = Math.max(0, this._bossHealth - playerBullet.damage);
             this.scene!.registry.set('bossHealth', this._bossHealth);
 
             if (this._bossHealth === 0) {
@@ -95,31 +100,38 @@ export default class EntityManager extends Plugins.ScenePlugin {
 
         this.scene!.physics.add.overlap(this._player, this._enemyBullets, (player, bullet) => {
             (bullet as Bullet).disable();
-            (player as Player).getComponent(Health)?.damage(5);
+            (player as Player).takeHit(8);
 
             this.scene?.cameras.main.shake(100, 0.01);
         });
 
         this.scene!.physics.add.overlap(this._player, this._enemies, (player) => {
-            (player as Player).getComponent(Health)?.damage(20);
+            (player as Player).takeHit(12);
         });
 
         console.log("[EntityManager] Group collisions initialized");
     }
 
     private spawnBossFormation() {
+        this._bossPatternPhase = 0;
         const width = this.scene!.cameras.main.width;
-        const margin = 64;
-        const usableWidth = width - margin * 2;
+        const astralBoss = Number(this.scene!.registry.get('bossSelection') ?? 0) === 1;
 
-        for (let i = 0; i < 11; i++) {
+        if (astralBoss) {
             const enemy = this._enemies.get() as Enemy;
-            if (!enemy)
-                continue;
+            enemy?.enableAstralBoss(width / 2, 190);
+        } else {
+            const margin = 64;
+            const usableWidth = width - margin * 2;
 
-            const x = margin + usableWidth * (i / 10);
-            const y = 130;
-            enemy.enableBoss(i, x, y);
+            for (let i = 0; i < EntityManager.BOSS_UNIT_COUNT; i++) {
+                const enemy = this._enemies.get() as Enemy;
+                if (!enemy)
+                    continue;
+
+                const x = margin + usableWidth * (i / (EntityManager.BOSS_UNIT_COUNT - 1));
+                enemy.enableBoss(i, x, 130);
+            }
         }
 
         this._bossHealth = EntityManager.BOSS_HEALTH_PER_UNIT * EntityManager.BOSS_UNIT_COUNT;
@@ -128,9 +140,9 @@ export default class EntityManager extends Plugins.ScenePlugin {
         this.scene!.registry.set('bossPatternPhase', this._bossPatternPhase);
 
         this.scene!.time.addEvent({
-            delay: 15000,
+            delay: 12000,
             callback: () => {
-                this._bossPatternPhase = (this._bossPatternPhase + 1) % 3;
+                this._bossPatternPhase = (this._bossPatternPhase + 1) % 5;
                 this.scene!.registry.set('bossPatternPhase', this._bossPatternPhase);
             },
             callbackScope: this,

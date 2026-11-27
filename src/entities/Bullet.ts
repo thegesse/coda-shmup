@@ -21,7 +21,8 @@ export default class Bullet extends Phaser.GameObjects.Rectangle {
         this.setPosition(x, y);
         this.setSize(data.width, data.height);
         this.setOrigin(0.5);
-        this.setFillStyle(data.color);
+        this.setFillStyle(data.color).setStrokeStyle(Math.max(1, Math.min(data.width, data.height) * 0.12), 0xffffff, 0.8);
+        this.setBlendMode(Phaser.BlendModes.ADD);
 
         this.scene.physics.world.add(this._arcadeBody);
         this.setActive(true);
@@ -36,9 +37,12 @@ export default class Bullet extends Phaser.GameObjects.Rectangle {
         // Maths way
         // this.setRotation(Math.atan2(velocityY, velocityX));
 
-        // Arcade bodies can't rotate: fit the body to the rotated bullet bounds
-        // All bullets use a circular hitbox.
-        this._arcadeBody.setCircle(Math.max(data.width, data.height) / 2);
+        // Long laser hitboxes follow their visible shape; compact danmaku stay forgiving circles.
+        if (Math.max(data.width, data.height) / Math.min(data.width, data.height) >= 5) {
+            this._arcadeBody.setSize(data.width, data.height);
+        } else {
+            this._arcadeBody.setCircle(Math.max(data.width, data.height) / 2);
+        }
     }
 
     public disable() {
