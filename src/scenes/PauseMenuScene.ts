@@ -65,10 +65,11 @@ export default class PauseMenuScene extends Phaser.Scene {
     }
 
     private restartRun() {
-        this.scene.stop(GameConstants.SceneKeys.PAUSE_MENU);
-        this.scene.resume(GameConstants.SceneKeys.MAIN_UI);
-        this.scene.restart(GameConstants.SceneKeys.MAIN_GAME);
-    }
+    this.scene.stop(GameConstants.SceneKeys.PAUSE_MENU);
+    this.scene.resume(GameConstants.SceneKeys.MAIN_UI);
+    this.scene.manager.stop(GameConstants.SceneKeys.MAIN_GAME);
+    this.scene.manager.start(GameConstants.SceneKeys.MAIN_GAME);
+}
 
     private returnToTitle() {
         this.scene.stop(GameConstants.SceneKeys.PAUSE_MENU);
